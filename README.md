@@ -106,15 +106,7 @@ From serious AI workflows to visual exploration of your own memory, mh-gdpr-ai.e
 
 ## Quick Start
 
-### Option 1: Docker Deployment (recommended)
-
-#### Prerequisites
-
-| Tool | Version | Description | Check |
-|------|---------|-------------|-------|
-| Docker | 20+ | Container runtime | `docker --version` |
-| Docker Compose | 2+ | Multi-container orchestration | `docker compose version` |
-| Git | 2+ | Version control | `git --version` |
+Requires: **Docker 20+** and **Git**.
 
 ```bash
 git clone https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu-s-plus.git
@@ -125,34 +117,6 @@ docker-compose up --build
 
 # → API:       http://localhost:8080
 # → Frontend:  http://localhost:3000
-```
-
-### Option 2: Local Development
-
-#### Prerequisites
-
-| Tool | Version | Description | Check |
-|------|---------|-------------|-------|
-| Go | 1.22+ | Backend runtime | `go version` |
-| Node.js | 20+ | Frontend runtime | `node -v` |
-| npm | 10+ | Package manager | `npm -v` |
-
-```bash
-# Clone
-git clone https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu-s-plus.git
-cd mh-gdpr-ai.eu-s-plus
-cp .env.example .env
-
-# Backend
-cd apps/api
-go run ./cmd/server
-# → API running on http://localhost:8080
-
-# Frontend (new terminal)
-cd apps/web
-npm install
-npm run dev
-# → Frontend running on http://localhost:3000
 ```
 
 ---
@@ -178,17 +142,7 @@ npm run dev
 
 ## API
 
-All routes prefixed with `/api/v1/`.
-
-```
-POST /chat/completions     → Proxy to AI provider (streaming)
-GET  /memories             → List your memories
-GET  /memories/search?q=   → Search memories
-GET  /conversations        → List conversations
-GET  /providers            → Available providers
-```
-
-Set provider via header: `X-MH-Provider: openai | anthropic | ollama`
+All routes under `/api/v1/` — chat proxy, memories, conversations, providers. Set provider via header: `X-MH-Provider: openai | anthropic | ollama`
 
 ## Security
 
@@ -203,14 +157,6 @@ Set provider via header: `X-MH-Provider: openai | anthropic | ollama`
 - Docker: non-root, read-only filesystem
 
 See [SECURITY.md](SECURITY.md) for our full security policy.
-
-## Tech Stack
-
-- **Backend**: Go 1.22 + Gin
-- **Frontend**: Next.js 15 + TypeScript + Tailwind CSS
-- **3D**: React Three Fiber + drei + postprocessing
-- **Database**: SQLite (local) — zero config
-- **Security**: AES-256-GCM, JWT, bcrypt, security headers
 
 ## Contributing
 
