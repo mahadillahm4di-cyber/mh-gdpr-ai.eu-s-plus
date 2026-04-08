@@ -22,7 +22,7 @@ Switch between GPT, Claude, and Llama without losing context. Your memory stays 
 <br>
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Mahadillah-0A66C2?style=flat-square&logo=linkedin)](https://linkedin.com/in/mahadillah)
-[![Email](https://img.shields.io/badge/Email-mahadillahm4di%40proton.me-8B89CC?style=flat-square&logo=protonmail)](mailto:mahadillahm4di@proton.me)
+[![Email](https://img.shields.io/badge/Email-mahadillah%40mh--gdpr--ai.eu-8B89CC?style=flat-square&logo=mail.ru)](mailto:mahadillah@mh-gdpr-ai.eu)
 [![GitHub](https://img.shields.io/badge/GitHub-mahadillahm4di--cyber-181717?style=flat-square&logo=github)](https://github.com/mahadillahm4di-cyber)
 
 <br>
