@@ -1,5 +1,7 @@
 <div align="center">
 
+![mh-gdpr-ai.eu S+](docs/assets/logo-banner.svg)
+
 # mh-gdpr-ai.eu S+
 
 **Your AI Memory. Your Rules.**
