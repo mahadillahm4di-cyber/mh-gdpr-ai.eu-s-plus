@@ -11,8 +11,8 @@ func TestOllamaAdapter_Name(t *testing.T) {
 
 func TestOllamaAdapter_DefaultModel(t *testing.T) {
 	a := NewOllamaAdapter("http://localhost:11434")
-	if a.DefaultModel() != "llama3" {
-		t.Errorf("expected llama3, got %s", a.DefaultModel())
+	if a.DefaultModel() != "tinyllama" {
+		t.Errorf("expected tinyllama, got %s", a.DefaultModel())
 	}
 }
 

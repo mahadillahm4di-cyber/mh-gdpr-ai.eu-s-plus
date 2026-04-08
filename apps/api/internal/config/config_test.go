@@ -31,7 +31,7 @@ func TestLoad_Defaults(t *testing.T) {
 	if cfg.RateLimitRPM != 60 {
 		t.Errorf("expected rate limit 60, got %d", cfg.RateLimitRPM)
 	}
-	if len(cfg.CORSAllowedOrigins) != 1 || cfg.CORSAllowedOrigins[0] != "http://localhost:3000" {
+	if len(cfg.CORSAllowedOrigins) != 3 || cfg.CORSAllowedOrigins[0] != "http://localhost:3000" {
 		t.Errorf("unexpected CORS origins: %v", cfg.CORSAllowedOrigins)
 	}
 }
