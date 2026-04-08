@@ -1,0 +1,83 @@
+# ========================
+# SECURITY — Never commit these
+# ========================
+.env
+.env.*
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+*.cert
+*secret*
+*credential*
+*service-account*.json
+.gcp-credentials.json
+
+# ========================
+# Go
+# ========================
+apps/api/mh-gdpr-api
+apps/api/tmp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+coverage.out
+
+# ========================
+# Node / Next.js
+# ========================
+node_modules/
+apps/web/.next/
+apps/web/out/
+.turbo/
+*.tsbuildinfo
+
+# ========================
+# Database (local dev only)
+# ========================
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# ========================
+# OS
+# ========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================
+# IDE
+# ========================
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ========================
+# Docker
+# ========================
+docker-compose.override.yml
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
+
+# ========================
+# Test & Coverage
+# ========================
+coverage/
+.nyc_output/
+test-results/
+playwright-report/

@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # ── Backend Go Tests ──
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race -coverprofile=coverage.out ./...
+
+      - name: Check coverage
+        run: go tool cover -func=coverage.out
+
+  # ── Frontend Build ──
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+  # ── Security Checks ──
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for secrets
+        run: |
+          # SECURITY: Fail if any potential secrets are found in code
+          if grep -rn "sk-[a-zA-Z0-9]" --include="*.go" --include="*.ts" --include="*.tsx" .; then
+            echo "FAIL: Potential API key found in code!"
+            exit 1
+          fi
+
+      - name: Check .env not committed
+        run: |
+          if [ -f .env ]; then
+            echo "FAIL: .env file should not be committed!"
+            exit 1
+          fi
