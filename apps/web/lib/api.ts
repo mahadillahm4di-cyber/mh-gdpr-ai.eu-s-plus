@@ -8,7 +8,7 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-type Provider = "openai" | "anthropic" | "ollama";
+type Provider = "openai" | "anthropic" | "ollama" | "groq";
 
 interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -156,8 +156,9 @@ class MHGatewayAPI {
       buffer = lines.pop() || "";
 
       for (const line of lines) {
-        if (line.startsWith("data: ")) {
-          const data = line.slice(6);
+        const dataPrefix = line.startsWith("data: ") ? 6 : line.startsWith("data:") ? 5 : -1;
+        if (dataPrefix !== -1) {
+          const data = line.slice(dataPrefix);
           try {
             const chunk = JSON.parse(data);
             if (chunk.done) {
@@ -221,6 +222,26 @@ class MHGatewayAPI {
     return this.request<{
       providers: { name: string; default_model: string; healthy: boolean }[];
     }>("/api/v1/providers");
+  }
+
+  // ── Settings ──
+
+  async getSettings() {
+    return this.request<{
+      openai_api_key: string;
+      anthropic_api_key: string;
+      groq_api_key: string;
+      openai_configured: boolean;
+      anthropic_configured: boolean;
+      groq_configured: boolean;
+    }>("/api/v1/settings");
+  }
+
+  async saveSettings(settings: { openai_api_key: string; anthropic_api_key: string; groq_api_key: string }) {
+    return this.request<{ saved: boolean }>("/api/v1/settings", {
+      method: "POST",
+      body: JSON.stringify(settings),
+    });
   }
 }
 

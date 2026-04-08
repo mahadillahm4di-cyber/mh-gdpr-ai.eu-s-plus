@@ -29,6 +29,7 @@ type Config struct {
 	// Providers
 	OpenAIAPIKey    string
 	AnthropicAPIKey string
+	GroqAPIKey      string
 	OllamaHost      string
 
 	// Database
@@ -45,13 +46,14 @@ func Load() (*Config, error) {
 		MemoryEncryptionKey: os.Getenv("MEMORY_ENCRYPTION_KEY"),
 		OpenAIAPIKey:    os.Getenv("OPENAI_API_KEY"),
 		AnthropicAPIKey: os.Getenv("ANTHROPIC_API_KEY"),
+		GroqAPIKey:      os.Getenv("GROQ_API_KEY"),
 		OllamaHost:      getEnvOrDefault("OLLAMA_HOST", "http://localhost:11434"),
 		DatabaseURL:     os.Getenv("DATABASE_URL"),
 		RateLimitRPM:    getEnvAsInt("RATE_LIMIT_RPM", 60),
 	}
 
 	// Parse CORS origins
-	corsRaw := getEnvOrDefault("CORS_ALLOWED_ORIGINS", "http://localhost:3000")
+	corsRaw := getEnvOrDefault("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:3001,http://localhost:3002")
 	cfg.CORSAllowedOrigins = strings.Split(corsRaw, ",")
 	for i := range cfg.CORSAllowedOrigins {
 		cfg.CORSAllowedOrigins[i] = strings.TrimSpace(cfg.CORSAllowedOrigins[i])

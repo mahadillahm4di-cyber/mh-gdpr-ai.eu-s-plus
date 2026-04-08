@@ -9,8 +9,18 @@ interface ChatMessageProps {
   message: ChatMessageType;
 }
 
+// Strip all ACTION tags from displayed text (full blocks and partial mentions)
+function stripActions(content: string): string {
+  return content
+    .replace(/\[ACTION:\w+\][\s\S]*?\[\/ACTION\]/g, "")
+    .replace(/\[ACTION:\w+\][^[\n]*/g, "")
+    .replace(/\[\/ACTION\]/g, "")
+    .trim();
+}
+
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === "user";
+  const displayContent = isUser ? message.content : stripActions(message.content);
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
@@ -92,7 +102,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
                 },
               }}
             >
-              {message.content}
+              {displayContent}
             </ReactMarkdown>
           </div>
         )}

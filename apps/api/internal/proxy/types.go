@@ -11,6 +11,7 @@ const (
 	ProviderOpenAI    Provider = "openai"
 	ProviderAnthropic Provider = "anthropic"
 	ProviderOllama    Provider = "ollama"
+	ProviderGroq      Provider = "groq"
 )
 
 // ValidProviders lists all supported providers for input validation.
@@ -19,6 +20,7 @@ var ValidProviders = map[Provider]bool{
 	ProviderOpenAI:    true,
 	ProviderAnthropic: true,
 	ProviderOllama:    true,
+	ProviderGroq:      true,
 }
 
 // IsValidProvider checks if a provider string is supported.

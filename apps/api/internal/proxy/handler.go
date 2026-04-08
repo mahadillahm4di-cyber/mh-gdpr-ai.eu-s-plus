@@ -19,6 +19,11 @@ type AutoSaveStore interface {
 	SaveMessageRecord(ctx context.Context, id, conversationID, role, content, provider string, tokenCount int) error
 }
 
+// MemorySummarizer creates memories from conversations.
+type MemorySummarizer interface {
+	CheckAndSummarize(ctx context.Context, conversationID, userID string) error
+}
+
 // ContextInjector detects provider switches and injects context.
 // Defined here to avoid circular imports with the injector package.
 type ContextInjector interface {
@@ -26,15 +31,22 @@ type ContextInjector interface {
 	InjectContext(ctx context.Context, userID string, messages []ChatMessage) ([]ChatMessage, error)
 }
 
+// UserKeyStore retrieves per-user API keys so personal keys take priority over the default.
+type UserKeyStore interface {
+	GetUserAPIKey(ctx context.Context, userID string, provider Provider) string
+}
+
 // ProxyHandler handles incoming chat requests and dispatches to the right provider.
 type ProxyHandler struct {
-	adapters map[Provider]ProviderAdapter
-	store    AutoSaveStore
-	injector ContextInjector
+	adapters   map[Provider]ProviderAdapter
+	store      AutoSaveStore
+	injector   ContextInjector
+	summarizer MemorySummarizer
+	userKeys   UserKeyStore
 }
 
 // NewProxyHandler creates a proxy handler with all configured adapters.
-func NewProxyHandler(openaiKey, anthropicKey, ollamaHost string) *ProxyHandler {
+func NewProxyHandler(openaiKey, anthropicKey, groqKey, ollamaHost string) *ProxyHandler {
 	h := &ProxyHandler{
 		adapters: make(map[Provider]ProviderAdapter),
 	}
@@ -44,6 +56,9 @@ func NewProxyHandler(openaiKey, anthropicKey, ollamaHost string) *ProxyHandler {
 	}
 	if anthropicKey != "" {
 		h.adapters[ProviderAnthropic] = NewAnthropicAdapter(anthropicKey)
+	}
+	if groqKey != "" {
+		h.adapters[ProviderGroq] = NewGroqAdapter(groqKey)
 	}
 	h.adapters[ProviderOllama] = NewOllamaAdapter(ollamaHost)
 
@@ -60,13 +75,43 @@ func (h *ProxyHandler) SetInjector(inj ContextInjector) {
 	h.injector = inj
 }
 
+// SetSummarizer sets the memory summarizer for auto-creating memories.
+func (h *ProxyHandler) SetSummarizer(s MemorySummarizer) {
+	h.summarizer = s
+}
+
+// SetUserKeyStore sets the store for per-user API keys.
+func (h *ProxyHandler) SetUserKeyStore(s UserKeyStore) {
+	h.userKeys = s
+}
+
+// ReloadAdapters updates the provider adapters with new API keys.
+func (h *ProxyHandler) ReloadAdapters(openaiKey, anthropicKey, groqKey, ollamaHost string) {
+	if openaiKey != "" {
+		h.adapters[ProviderOpenAI] = NewOpenAIAdapter(openaiKey)
+	} else {
+		delete(h.adapters, ProviderOpenAI)
+	}
+	if anthropicKey != "" {
+		h.adapters[ProviderAnthropic] = NewAnthropicAdapter(anthropicKey)
+	} else {
+		delete(h.adapters, ProviderAnthropic)
+	}
+	if groqKey != "" {
+		h.adapters[ProviderGroq] = NewGroqAdapter(groqKey)
+	} else {
+		delete(h.adapters, ProviderGroq)
+	}
+	h.adapters[ProviderOllama] = NewOllamaAdapter(ollamaHost)
+}
+
 // ChatCompletions handles POST /api/v1/chat/completions.
 // SECURITY: Validates provider header, validates request body, requires auth.
 func (h *ProxyHandler) ChatCompletions(c *gin.Context) {
 	// 1. Get provider from header
 	providerStr := strings.ToLower(c.GetHeader("X-MH-Provider"))
 	if providerStr == "" {
-		providerStr = "openai"
+		providerStr = "groq"
 	}
 
 	if !IsValidProvider(providerStr) {
@@ -77,12 +122,31 @@ func (h *ProxyHandler) ChatCompletions(c *gin.Context) {
 	}
 
 	provider := Provider(providerStr)
-	adapter, ok := h.adapters[provider]
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": fmt.Sprintf("provider %s is not configured (missing API key?)", provider),
-		})
-		return
+
+	// Check for per-user API key first, then fall back to global adapter
+	var adapter ProviderAdapter
+	userID := c.GetString("user_id")
+	if h.userKeys != nil && userID != "" {
+		if userKey := h.userKeys.GetUserAPIKey(c.Request.Context(), userID, provider); userKey != "" {
+			switch provider {
+			case ProviderGroq:
+				adapter = NewGroqAdapter(userKey)
+			case ProviderOpenAI:
+				adapter = NewOpenAIAdapter(userKey)
+			case ProviderAnthropic:
+				adapter = NewAnthropicAdapter(userKey)
+			}
+		}
+	}
+	if adapter == nil {
+		var ok bool
+		adapter, ok = h.adapters[provider]
+		if !ok {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": fmt.Sprintf("provider %s is not configured (missing API key?)", provider),
+			})
+			return
+		}
 	}
 
 	// 2. Parse and validate request body
@@ -105,7 +169,13 @@ func (h *ProxyHandler) ChatCompletions(c *gin.Context) {
 	req.Provider = provider
 	req.UserID = c.GetString("user_id")
 
-	// 3. Context injection on provider switch
+	// 3. Inject MH Assistant system prompt as first message
+	hasSystemMsg := len(req.Messages) > 0 && req.Messages[0].Role == "system"
+	if !hasSystemMsg {
+		req.Messages = append([]ChatMessage{{Role: "system", Content: MHAssistantSystemPrompt}}, req.Messages...)
+	}
+
+	// 4. Context injection on provider switch
 	if h.injector != nil && req.UserID != "" {
 		if h.injector.DetectSwitch(req.UserID, provider) {
 			injected, err := h.injector.InjectContext(c.Request.Context(), req.UserID, req.Messages)
@@ -230,6 +300,13 @@ func (h *ProxyHandler) autoSave(ctx context.Context, req *ChatRequest, assistant
 		msgID := uuid.New().String()
 		if err := h.store.SaveMessageRecord(ctx, msgID, convID, "assistant", assistantContent, string(req.Provider), tokensOut); err != nil {
 			slog.Warn("auto_save_assistant_msg_failed", "error", err)
+		}
+	}
+
+	// Create memory from this conversation
+	if h.summarizer != nil {
+		if err := h.summarizer.CheckAndSummarize(ctx, convID, req.UserID); err != nil {
+			slog.Warn("auto_summarize_failed", "error", err)
 		}
 	}
 }

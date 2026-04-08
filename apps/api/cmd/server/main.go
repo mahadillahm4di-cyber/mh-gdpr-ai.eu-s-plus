@@ -8,6 +8,7 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
 
@@ -56,12 +57,20 @@ func main() {
 	userStore := auth.NewSQLiteUserStore(store.DB())
 	authHandler := auth.NewHandler(userStore, secretKey)
 	memoryHandler := memory.NewHandler(store)
-	proxyHandler := proxy.NewProxyHandler(cfg.OpenAIAPIKey, cfg.AnthropicAPIKey, cfg.OllamaHost)
+	proxyHandler := proxy.NewProxyHandler(cfg.OpenAIAPIKey, cfg.AnthropicAPIKey, cfg.GroqAPIKey, cfg.OllamaHost)
 	contextInjector := injector.NewContextInjector(store)
 
-	// Wire injector + memory store into proxy handler for auto-save and context injection
+	// Wire injector + memory store + summarizer into proxy handler
+	summarizer := memory.NewSummarizer(store)
 	proxyHandler.SetMemoryStore(store)
 	proxyHandler.SetInjector(contextInjector)
+	proxyHandler.SetSummarizer(summarizer)
+	proxyHandler.SetUserKeyStore(&userKeyAdapter{store: store})
+
+	// Load user API keys from database (for local-user in dev mode)
+	if savedSettings, err := store.GetUserSettings(context.Background(), "local-user"); err == nil && savedSettings != nil {
+		proxyHandler.ReloadAdapters(savedSettings.OpenAIKey, savedSettings.AnthropicKey, savedSettings.GroqKey, cfg.OllamaHost)
+	}
 
 	// Initialize router
 	r := gin.New()
@@ -114,6 +123,51 @@ func main() {
 		protected.GET("/conversations", memoryHandler.ListConversations)
 		protected.GET("/conversations/:id", memoryHandler.GetConversation)
 		protected.DELETE("/conversations/:id", memoryHandler.DeleteConversation)
+
+		// Settings (API keys)
+		protected.GET("/settings", func(c *gin.Context) {
+			userID := c.GetString("user_id")
+			settings, err := store.GetUserSettings(c.Request.Context(), userID)
+			if err != nil {
+				c.JSON(500, gin.H{"error": "failed to get settings"})
+				return
+			}
+			// Return masked keys for display
+			c.JSON(200, gin.H{
+				"openai_api_key":       maskKey(settings.OpenAIKey),
+				"anthropic_api_key":    maskKey(settings.AnthropicKey),
+				"groq_api_key":         maskKey(settings.GroqKey),
+				"openai_configured":    settings.OpenAIKey != "",
+				"anthropic_configured": settings.AnthropicKey != "",
+				"groq_configured":      settings.GroqKey != "",
+			})
+		})
+		protected.POST("/settings", func(c *gin.Context) {
+			userID := c.GetString("user_id")
+			var req memory.UserSettings
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(400, gin.H{"error": "invalid request"})
+				return
+			}
+			// Only update keys that are provided (non-empty)
+			existing, _ := store.GetUserSettings(c.Request.Context(), userID)
+			if req.OpenAIKey == "" && existing != nil {
+				req.OpenAIKey = existing.OpenAIKey
+			}
+			if req.AnthropicKey == "" && existing != nil {
+				req.AnthropicKey = existing.AnthropicKey
+			}
+			if req.GroqKey == "" && existing != nil {
+				req.GroqKey = existing.GroqKey
+			}
+			if err := store.SaveUserSettings(c.Request.Context(), userID, &req); err != nil {
+				c.JSON(500, gin.H{"error": "failed to save settings"})
+				return
+			}
+			// Reload proxy adapters with new keys
+			proxyHandler.ReloadAdapters(req.OpenAIKey, req.AnthropicKey, req.GroqKey, cfg.OllamaHost)
+			c.JSON(200, gin.H{"saved": true})
+		})
 	}
 
 	// ── Start Server ──
@@ -127,4 +181,21 @@ func main() {
 		slog.Error("server failed", "error", err)
 		os.Exit(1)
 	}
+}
+
+// maskKey shows only the last 4 chars of an API key for security.
+func maskKey(key string) string {
+	if len(key) <= 4 {
+		return ""
+	}
+	return "sk-..." + key[len(key)-4:]
+}
+
+// userKeyAdapter adapts the memory store to the proxy.UserKeyStore interface.
+type userKeyAdapter struct {
+	store *memory.SQLiteStore
+}
+
+func (a *userKeyAdapter) GetUserAPIKey(ctx context.Context, userID string, provider proxy.Provider) string {
+	return a.store.GetUserAPIKey(ctx, userID, string(provider))
 }

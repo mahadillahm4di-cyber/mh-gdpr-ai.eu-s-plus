@@ -4,6 +4,7 @@ import { useChatStore } from "@/lib/stores/chat-store";
 import type { Provider } from "@/lib/api";
 
 const providers: { id: Provider; label: string; color: string }[] = [
+  { id: "groq", label: "Groq", color: "#F55036" },
   { id: "openai", label: "GPT", color: "#4A90D9" },
   { id: "anthropic", label: "Claude", color: "#E87B35" },
   { id: "ollama", label: "Llama", color: "#4ADE80" },

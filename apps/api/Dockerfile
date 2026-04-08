@@ -12,7 +12,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o mh-gdpr-api ./cmd/serv
 # SECURITY: Minimal image, non-root user, read-only filesystem
 FROM alpine:3.19
 
-RUN apk add --no-cache ca-certificates wget \
+RUN apk add --no-cache ca-certificates curl \
     && addgroup -S appgroup \
     && adduser -S appuser -G appgroup
 
@@ -26,6 +26,6 @@ USER appuser
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD wget --spider -q http://localhost:8080/api/v1/health || exit 1
+    CMD curl -sf http://localhost:8080/api/v1/health || exit 1
 
 ENTRYPOINT ["./mh-gdpr-api"]

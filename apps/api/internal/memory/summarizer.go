@@ -11,8 +11,10 @@ import (
 )
 
 const (
-	// SummarizeThreshold is the number of messages after which a summary is generated.
-	SummarizeThreshold = 10
+	// SummarizeThreshold is the number of messages after which a memory is created.
+	SummarizeThreshold = 2
+	// MaxFullTextLength is the max length before switching to summary mode.
+	MaxFullTextLength = 2000
 	// MaxSummaryLength is the maximum length of a generated summary.
 	MaxSummaryLength = 500
 )
@@ -51,8 +53,14 @@ func (s *Summarizer) CheckAndSummarize(ctx context.Context, conversationID, user
 		}
 	}
 
-	// Generate summary from messages
-	summary := generateLocalSummary(msgs)
+	// Save full conversation text, or summarize if too long
+	fullText := buildFullConversation(msgs)
+	var summary string
+	if len(fullText) <= MaxFullTextLength {
+		summary = fullText
+	} else {
+		summary = generateLocalSummary(msgs)
+	}
 	theme := detectTheme(msgs)
 
 	mem := &Memory{
@@ -81,6 +89,24 @@ func (s *Summarizer) CheckAndSummarize(ctx context.Context, conversationID, user
 	)
 
 	return nil
+}
+
+// buildFullConversation returns the full conversation text, word for word.
+func buildFullConversation(msgs []*Message) string {
+	var sb strings.Builder
+	for _, m := range msgs {
+		switch m.Role {
+		case "user":
+			sb.WriteString("User: ")
+		case "assistant":
+			sb.WriteString("AI: ")
+		case "system":
+			continue
+		}
+		sb.WriteString(m.Content)
+		sb.WriteString("\n\n")
+	}
+	return strings.TrimSpace(sb.String())
 }
 
 // generateLocalSummary creates a summary from conversation messages without calling an AI.

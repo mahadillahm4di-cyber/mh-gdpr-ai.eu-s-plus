@@ -93,6 +93,13 @@ func (s *SQLiteStore) migrate() error {
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		)`,
 		`CREATE INDEX IF NOT EXISTS idx_memories_user ON memories(user_id)`,
+		`CREATE TABLE IF NOT EXISTS user_settings (
+			user_id TEXT PRIMARY KEY REFERENCES users(id),
+			openai_api_key TEXT DEFAULT '',
+			anthropic_api_key TEXT DEFAULT '',
+			groq_api_key TEXT DEFAULT '',
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
 	}
 
 	for _, q := range queries {
@@ -100,6 +107,16 @@ func (s *SQLiteStore) migrate() error {
 			return fmt.Errorf("migration failed: %w\nQuery: %s", err, q)
 		}
 	}
+
+	// Add groq_api_key column if missing (migration for existing databases)
+	s.db.Exec(`ALTER TABLE user_settings ADD COLUMN groq_api_key TEXT DEFAULT ''`)
+
+	// Create default local user for anonymous/dev mode access
+	_, _ = s.db.Exec(
+		`INSERT OR IGNORE INTO users (id, email, password_hash) VALUES (?, ?, ?)`,
+		"local-user", "local@localhost", "no-password-local-only",
+	)
+
 	return nil
 }
 
@@ -372,4 +389,77 @@ func (s *SQLiteStore) SaveMessageRecord(ctx context.Context, id, conversationID,
 		id, conversationID, role, encrypted, provider, tokenCount, time.Now(),
 	)
 	return err
+}
+
+// UserSettings holds API keys for a user.
+type UserSettings struct {
+	OpenAIKey    string `json:"openai_api_key"`
+	AnthropicKey string `json:"anthropic_api_key"`
+	GroqKey      string `json:"groq_api_key"`
+}
+
+// SaveUserSettings stores encrypted API keys for a user.
+func (s *SQLiteStore) SaveUserSettings(ctx context.Context, userID string, settings *UserSettings) error {
+	encOpenAI, err := Encrypt(settings.OpenAIKey, s.encryptionKey)
+	if err != nil {
+		return fmt.Errorf("encrypt openai key: %w", err)
+	}
+	encAnthropic, err := Encrypt(settings.AnthropicKey, s.encryptionKey)
+	if err != nil {
+		return fmt.Errorf("encrypt anthropic key: %w", err)
+	}
+	encGroq, err := Encrypt(settings.GroqKey, s.encryptionKey)
+	if err != nil {
+		return fmt.Errorf("encrypt groq key: %w", err)
+	}
+
+	_, err = s.db.ExecContext(ctx,
+		`INSERT INTO user_settings (user_id, openai_api_key, anthropic_api_key, groq_api_key, updated_at)
+		 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+		 ON CONFLICT(user_id) DO UPDATE SET
+		 openai_api_key = excluded.openai_api_key,
+		 anthropic_api_key = excluded.anthropic_api_key,
+		 groq_api_key = excluded.groq_api_key,
+		 updated_at = CURRENT_TIMESTAMP`,
+		userID, encOpenAI, encAnthropic, encGroq,
+	)
+	return err
+}
+
+// GetUserSettings retrieves decrypted API keys for a user.
+func (s *SQLiteStore) GetUserSettings(ctx context.Context, userID string) (*UserSettings, error) {
+	var encOpenAI, encAnthropic, encGroq string
+	err := s.db.QueryRowContext(ctx,
+		`SELECT openai_api_key, anthropic_api_key, groq_api_key FROM user_settings WHERE user_id = ?`, userID,
+	).Scan(&encOpenAI, &encAnthropic, &encGroq)
+	if err == sql.ErrNoRows {
+		return &UserSettings{}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	settings := &UserSettings{}
+	settings.OpenAIKey, _ = Decrypt(encOpenAI, s.encryptionKey)
+	settings.AnthropicKey, _ = Decrypt(encAnthropic, s.encryptionKey)
+	settings.GroqKey, _ = Decrypt(encGroq, s.encryptionKey)
+	return settings, nil
+}
+
+// GetUserAPIKey returns the decrypted API key for a specific provider and user.
+// Returns "" if no key is configured. Used by the proxy to prioritize user keys over defaults.
+func (s *SQLiteStore) GetUserAPIKey(ctx context.Context, userID string, provider string) string {
+	settings, err := s.GetUserSettings(ctx, userID)
+	if err != nil || settings == nil {
+		return ""
+	}
+	switch provider {
+	case "groq":
+		return settings.GroqKey
+	case "openai":
+		return settings.OpenAIKey
+	case "anthropic":
+		return settings.AnthropicKey
+	}
+	return ""
 }

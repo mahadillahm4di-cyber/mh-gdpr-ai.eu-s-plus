@@ -27,7 +27,7 @@ func NewOllamaAdapter(host string) *OllamaAdapter {
 }
 
 func (a *OllamaAdapter) Name() Provider    { return ProviderOllama }
-func (a *OllamaAdapter) DefaultModel() string { return "llama3" }
+func (a *OllamaAdapter) DefaultModel() string { return "tinyllama" }
 
 func (a *OllamaAdapter) HealthCheck() error {
 	resp, err := a.client.Get(a.host + "/api/tags")

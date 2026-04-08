@@ -9,10 +9,19 @@ import (
 )
 
 // AuthRequired validates the JWT token from the Authorization header.
-// SECURITY: Rejects requests without valid tokens. Sets user_id in context.
+// SECURITY: In production (API_SECRET_KEY set), rejects requests without valid tokens.
+// In local/dev mode (no API_SECRET_KEY), allows anonymous access with a default user ID.
 func AuthRequired(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
+
+		// Local/dev mode: no secret key configured → allow anonymous access
+		if header == "" && secret == "dev-secret-key-not-for-production-use" {
+			c.Set("user_id", "local-user")
+			c.Next()
+			return
+		}
+
 		if header == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "missing authorization header",
