@@ -9,9 +9,11 @@ interface ChatMessageProps {
   message: ChatMessageType;
 }
 
-// Strip all ACTION tags from displayed text (full blocks and partial mentions)
+// Strip ACTION tags and <think> blocks from displayed text
 function stripActions(content: string): string {
   return content
+    .replace(/<think>[\s\S]*?<\/think>/gi, "")
+    .replace(/<think>[\s\S]*/gi, "")
     .replace(/\[ACTION:\w+\][\s\S]*?\[\/ACTION\]/g, "")
     .replace(/\[ACTION:\w+\][^[\n]*/g, "")
     .replace(/\[\/ACTION\]/g, "")
