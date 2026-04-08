@@ -75,14 +75,12 @@ Every time you switch AI provider today, you start from zero. Your context, your
 
 <table>
 <tr>
-<td align="center"><strong>Split View — Stars + Memories + Chat</strong><br><img src="docs/assets/screenshot-mvp-splitview.png" width="100%"></td>
-<td align="center"><strong>Memory Space — Conversations & 3D</strong><br><img src="docs/assets/screenshot-mvp-space.png" width="100%"></td>
-<td align="center"><strong>Full 3D — 20 Memories Connected</strong><br><img src="docs/assets/screenshot-mvp-models.png" width="100%"></td>
+<td align="center" width="50%"><strong>Split View — Stars + Memories + Chat</strong><br><br><img src="docs/assets/screenshot-mvp-splitview.png" width="100%"></td>
+<td align="center" width="50%"><strong>Memory Space — Conversations & 3D</strong><br><br><img src="docs/assets/screenshot-mvp-space.png" width="100%"></td>
 </tr>
 <tr>
-<td align="center"><strong>3D Space with Conversation</strong><br><img src="docs/assets/screenshot-mvp-chat.png" width="100%"></td>
-<td></td>
-<td></td>
+<td align="center" width="50%"><strong>Full 3D — 20 Memories Connected</strong><br><br><img src="docs/assets/screenshot-mvp-models.png" width="100%"></td>
+<td align="center" width="50%"><strong>3D Space with Conversation</strong><br><br><img src="docs/assets/screenshot-mvp-chat.png" width="100%"></td>
 </tr>
 </table>
 
