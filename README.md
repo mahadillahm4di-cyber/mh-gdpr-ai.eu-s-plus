@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/logo-banner.svg" width="100%">
+![mh-gdpr-ai.eu S+](docs/assets/logo-banner.svg)
 
 # mh-gdpr-ai.eu S+
 
