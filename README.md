@@ -76,6 +76,7 @@ Every time you switch AI provider today, you start from zero. Your context, your
 | Split View — Stars + Memories + Chat | Memory Space — Conversations & 3D | Full 3D — 20 Memories Connected |
 |:---:|:---:|:---:|
 | ![Split View](docs/assets/screenshot-mvp-splitview.png) | ![Memory Space](docs/assets/screenshot-mvp-space.png) | ![Full 3D](docs/assets/screenshot-mvp-models.png) |
+| ![3D with Conversation](docs/assets/screenshot-mvp-chat.png) | | |
 
 ### MVP Demo Video
 
