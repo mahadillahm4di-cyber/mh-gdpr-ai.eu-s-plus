@@ -71,15 +71,11 @@ Every time you switch AI provider today, you start from zero. Your context, your
 - **Encrypted local storage** — AES-256 encryption. Your data stays on your machine. No cloud. No tracking. No lock-in.
 - **Free by default** — Groq (Llama) works out of the box, no payment required. Add your own OpenAI or Anthropic keys if you want.
 
-### MVP Screenshot
+### MVP Screenshots
 
-<div align="center">
-
-![Split View — 3D Memory Stars + Memories List + Chat](docs/assets/screenshot-mvp-splitview.png)
-
-*Split View: 3D memory stars (left) + memory list (center) + AI chat with Groq Llama 3.3 70B (right)*
-
-</div>
+| Split View — Stars + Memories + Chat | Memory Space — Conversations & 3D |
+|:---:|:---:|
+| ![Split View](docs/assets/screenshot-mvp-splitview.png) | ![Memory Space](docs/assets/screenshot-mvp-space.png) |
 
 ### MVP Demo Video
 
