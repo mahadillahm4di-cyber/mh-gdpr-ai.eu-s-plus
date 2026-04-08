@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="300">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="300" rx="16" fill="url(#bg)"/>
+
+  <!-- Glow -->
+  <circle cx="165" cy="150" r="140" fill="url(#glowGrad)"/>
+
+  <!-- Sparkles behind head — top right, clipped inside glow circle -->
+  <clipPath id="glowClip">
+    <circle cx="165" cy="150" r="140"/>
+  </clipPath>
+  <g clip-path="url(#glowClip)">
+    <!-- Sparkles — clipped inside circle, top right, dense -->
+    <circle cx="230" cy="28" r="1.5" fill="#4ade80" opacity="0.55"/>
+    <circle cx="248" cy="22" r="1.2" fill="#4ade80" opacity="0.6"/>
+    <circle cx="265" cy="35" r="1.5" fill="#4ade80" opacity="0.45"/>
+    <circle cx="240" cy="42" r="1" fill="#4ade80" opacity="0.5"/>
+    <circle cx="275" cy="25" r="1.3" fill="#4ade80" opacity="0.5"/>
+    <circle cx="255" cy="48" r="1.8" fill="#4ade80" opacity="0.4"/>
+    <circle cx="285" cy="40" r="1" fill="#4ade80" opacity="0.55"/>
+    <circle cx="235" cy="55" r="1.5" fill="#4ade80" opacity="0.45"/>
+    <circle cx="268" cy="52" r="1.2" fill="#4ade80" opacity="0.5"/>
+    <circle cx="290" cy="35" r="1" fill="#4ade80" opacity="0.4"/>
+    <circle cx="250" cy="18" r="1" fill="#4ade80" opacity="0.6"/>
+    <circle cx="278" cy="20" r="1.5" fill="#4ade80" opacity="0.5"/>
+    <circle cx="260" cy="58" r="1" fill="#4ade80" opacity="0.45"/>
+    <circle cx="222" cy="38" r="1.3" fill="#4ade80" opacity="0.5"/>
+    <circle cx="288" cy="50" r="1.2" fill="#4ade80" opacity="0.35"/>
+    <circle cx="272" cy="62" r="1" fill="#4ade80" opacity="0.4"/>
+    <circle cx="242" cy="62" r="1.5" fill="#4ade80" opacity="0.45"/>
+    <circle cx="295" cy="28" r="0.8" fill="#4ade80" opacity="0.5"/>
+    <circle cx="232" cy="20" r="1.2" fill="#4ade80" opacity="0.55"/>
+    <circle cx="280" cy="58" r="1" fill="#4ade80" opacity="0.4"/>
+    <circle cx="237" cy="15" r="1.3" fill="#4ade80" opacity="0.5"/>
+    <circle cx="258" cy="12" r="1" fill="#4ade80" opacity="0.55"/>
+    <circle cx="282" cy="15" r="1.5" fill="#4ade80" opacity="0.45"/>
+    <circle cx="270" cy="18" r="1.2" fill="#4ade80" opacity="0.5"/>
+    <circle cx="244" cy="32" r="1" fill="#4ade80" opacity="0.6"/>
+    <circle cx="260" cy="25" r="1.5" fill="#4ade80" opacity="0.45"/>
+    <circle cx="292" cy="22" r="1" fill="#4ade80" opacity="0.5"/>
+    <circle cx="226" cy="48" r="1.2" fill="#4ade80" opacity="0.45"/>
+    <circle cx="252" cy="38" r="1.3" fill="#4ade80" opacity="0.5"/>
+    <circle cx="274" cy="45" r="1" fill="#4ade80" opacity="0.55"/>
+    <circle cx="238" cy="35" r="1.5" fill="#4ade80" opacity="0.4"/>
+    <circle cx="284" cy="30" r="1.2" fill="#4ade80" opacity="0.5"/>
+    <circle cx="246" cy="52" r="1" fill="#4ade80" opacity="0.45"/>
+    <circle cx="270" cy="42" r="1.5" fill="#4ade80" opacity="0.5"/>
+    <circle cx="256" cy="30" r="1" fill="#4ade80" opacity="0.55"/>
+    <circle cx="228" cy="58" r="1.3" fill="#4ade80" opacity="0.4"/>
+    <circle cx="262" cy="45" r="1.2" fill="#4ade80" opacity="0.5"/>
+    <circle cx="280" cy="48" r="1.5" fill="#4ade80" opacity="0.4"/>
+    <circle cx="240" cy="25" r="1" fill="#4ade80" opacity="0.55"/>
+    <circle cx="296" cy="42" r="1.2" fill="#4ade80" opacity="0.35"/>
+  </g>
+
+  <!-- PIXEL ARMADILLO HEAD -->
+  <g transform="translate(165,150) scale(1.75) translate(-146,-110)">
+
+    <!-- Row 1: ears tips -->
+    <rect x="102" y="62" width="8" height="8" fill="#22c55e"/>
+    <rect x="190" y="62" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 2: ears -->
+    <rect x="94" y="70" width="8" height="8" fill="#22c55e"/>
+    <rect x="102" y="70" width="8" height="8" fill="#4ade80"/>
+    <rect x="110" y="70" width="8" height="8" fill="#22c55e"/>
+    <rect x="182" y="70" width="8" height="8" fill="#22c55e"/>
+    <rect x="190" y="70" width="8" height="8" fill="#4ade80"/>
+    <rect x="198" y="70" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 3: ears base + top of head -->
+    <rect x="94" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="102" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="118" y="78" width="8" height="8" fill="#16a34a"/>
+    <rect x="126" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="134" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="142" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="150" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="158" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="166" y="78" width="8" height="8" fill="#16a34a"/>
+    <rect x="190" y="78" width="8" height="8" fill="#22c55e"/>
+    <rect x="198" y="78" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 4: armor plate top -->
+    <rect x="110" y="86" width="8" height="8" fill="#16a34a"/>
+    <rect x="118" y="86" width="8" height="8" fill="#22c55e"/>
+    <rect x="126" y="86" width="8" height="8" fill="#4ade80"/>
+    <rect x="134" y="86" width="8" height="8" fill="#22c55e"/>
+    <rect x="142" y="86" width="8" height="8" fill="#4ade80"/>
+    <rect x="150" y="86" width="8" height="8" fill="#22c55e"/>
+    <rect x="158" y="86" width="8" height="8" fill="#4ade80"/>
+    <rect x="166" y="86" width="8" height="8" fill="#22c55e"/>
+    <rect x="174" y="86" width="8" height="8" fill="#16a34a"/>
+
+    <!-- Row 5: armor plate + forehead -->
+    <rect x="110" y="94" width="8" height="8" fill="#22c55e"/>
+    <rect x="118" y="94" width="8" height="8" fill="#4ade80"/>
+    <rect x="126" y="94" width="8" height="8" fill="#22c55e"/>
+    <rect x="134" y="94" width="8" height="8" fill="#4ade80"/>
+    <rect x="142" y="94" width="8" height="8" fill="#86efac"/>
+    <rect x="150" y="94" width="8" height="8" fill="#4ade80"/>
+    <rect x="158" y="94" width="8" height="8" fill="#22c55e"/>
+    <rect x="166" y="94" width="8" height="8" fill="#4ade80"/>
+    <rect x="174" y="94" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 6: armor band -->
+    <rect x="102" y="102" width="8" height="8" fill="#16a34a"/>
+    <rect x="110" y="102" width="8" height="8" fill="#22c55e"/>
+    <rect x="118" y="102" width="8" height="8" fill="#16a34a"/>
+    <rect x="126" y="102" width="8" height="8" fill="#22c55e"/>
+    <rect x="134" y="102" width="8" height="8" fill="#16a34a"/>
+    <rect x="142" y="102" width="8" height="8" fill="#22c55e"/>
+    <rect x="150" y="102" width="8" height="8" fill="#16a34a"/>
+    <rect x="158" y="102" width="8" height="8" fill="#22c55e"/>
+    <rect x="166" y="102" width="8" height="8" fill="#16a34a"/>
+    <rect x="174" y="102" width="8" height="8" fill="#22c55e"/>
+    <rect x="182" y="102" width="8" height="8" fill="#16a34a"/>
+
+    <!-- Row 7: eyes row -->
+    <rect x="102" y="110" width="8" height="8" fill="#22c55e"/>
+    <rect x="110" y="110" width="8" height="8" fill="#4ade80"/>
+    <rect x="118" y="110" width="8" height="8" fill="#4ade80"/>
+    <rect x="126" y="110" width="8" height="8" fill="#0a0a0a"/>
+    <rect x="134" y="110" width="8" height="8" fill="#ffffff" opacity="0.8"/>
+    <rect x="142" y="110" width="8" height="8" fill="#4ade80"/>
+    <rect x="150" y="110" width="8" height="8" fill="#4ade80"/>
+    <rect x="158" y="110" width="8" height="8" fill="#0a0a0a"/>
+    <rect x="166" y="110" width="8" height="8" fill="#ffffff" opacity="0.8"/>
+    <rect x="174" y="110" width="8" height="8" fill="#4ade80"/>
+    <rect x="182" y="110" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 8: cheeks -->
+    <rect x="102" y="118" width="8" height="8" fill="#22c55e"/>
+    <rect x="110" y="118" width="8" height="8" fill="#4ade80"/>
+    <rect x="118" y="118" width="8" height="8" fill="#4ade80"/>
+    <rect x="126" y="118" width="8" height="8" fill="#0a0a0a"/>
+    <rect x="134" y="118" width="8" height="8" fill="#4ade80"/>
+    <rect x="142" y="118" width="8" height="8" fill="#4ade80"/>
+    <rect x="150" y="118" width="8" height="8" fill="#4ade80"/>
+    <rect x="158" y="118" width="8" height="8" fill="#0a0a0a"/>
+    <rect x="166" y="118" width="8" height="8" fill="#4ade80"/>
+    <rect x="174" y="118" width="8" height="8" fill="#4ade80"/>
+    <rect x="182" y="118" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 9: snout top -->
+    <rect x="110" y="126" width="8" height="8" fill="#22c55e"/>
+    <rect x="118" y="126" width="8" height="8" fill="#4ade80"/>
+    <rect x="126" y="126" width="8" height="8" fill="#4ade80"/>
+    <rect x="134" y="126" width="8" height="8" fill="#86efac"/>
+    <rect x="142" y="126" width="8" height="8" fill="#86efac"/>
+    <rect x="150" y="126" width="8" height="8" fill="#86efac"/>
+    <rect x="158" y="126" width="8" height="8" fill="#4ade80"/>
+    <rect x="166" y="126" width="8" height="8" fill="#4ade80"/>
+    <rect x="174" y="126" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 10: snout with nose -->
+    <rect x="118" y="134" width="8" height="8" fill="#22c55e"/>
+    <rect x="126" y="134" width="8" height="8" fill="#4ade80"/>
+    <rect x="134" y="134" width="8" height="8" fill="#86efac"/>
+    <rect x="142" y="134" width="8" height="8" fill="#16a34a"/>
+    <rect x="150" y="134" width="8" height="8" fill="#16a34a"/>
+    <rect x="158" y="134" width="8" height="8" fill="#86efac"/>
+    <rect x="166" y="134" width="8" height="8" fill="#4ade80"/>
+
+    <!-- Row 11: mouth -->
+    <rect x="126" y="142" width="8" height="8" fill="#22c55e"/>
+    <rect x="134" y="142" width="8" height="8" fill="#4ade80"/>
+    <rect x="142" y="142" width="8" height="8" fill="#4ade80"/>
+    <rect x="150" y="142" width="8" height="8" fill="#4ade80"/>
+    <rect x="158" y="142" width="8" height="8" fill="#22c55e"/>
+
+    <!-- Row 12: chin -->
+    <rect x="134" y="150" width="8" height="8" fill="#22c55e"/>
+    <rect x="142" y="150" width="8" height="8" fill="#22c55e"/>
+    <rect x="150" y="150" width="8" height="8" fill="#22c55e"/>
+
+
+  </g>
+
+  <!-- Text -->
+  <text x="370" y="120" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="700" fill="#ffffff" letter-spacing="-1">
+    mh-gdpr-ai.eu
+  </text>
+  <text x="370" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="700" fill="#4ade80" letter-spacing="-1">
+    S+
+  </text>
+  <text x="370" y="215" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#ffffff" opacity="0.4" letter-spacing="0.5">
+    Your AI Memory. Your Rules.
+  </text>
+
+  <!-- Stars — far right -->
+  <circle cx="750" cy="60" r="2" fill="#4ade80" opacity="0.3"/>
+  <circle cx="810" cy="100" r="1.5" fill="#4ade80" opacity="0.2"/>
+  <circle cx="860" cy="50" r="1" fill="#4ade80" opacity="0.4"/>
+  <circle cx="730" cy="240" r="1.5" fill="#4ade80" opacity="0.25"/>
+  <circle cx="840" cy="210" r="2" fill="#4ade80" opacity="0.15"/>
+  <circle cx="870" cy="260" r="1" fill="#4ade80" opacity="0.3"/>
+</svg>
