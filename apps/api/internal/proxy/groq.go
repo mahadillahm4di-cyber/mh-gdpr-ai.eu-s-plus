@@ -31,7 +31,7 @@ func NewGroqAdapter(apiKey string) *GroqAdapter {
 }
 
 func (a *GroqAdapter) Name() Provider      { return ProviderGroq }
-func (a *GroqAdapter) DefaultModel() string { return "llama-3.1-8b-instant" }
+func (a *GroqAdapter) DefaultModel() string { return "llama-3.3-70b-versatile" }
 
 func (a *GroqAdapter) HealthCheck() error {
 	if a.apiKey == "" {

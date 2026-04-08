@@ -22,6 +22,7 @@ export default function DashboardPage() {
   const {
     messages,
     provider,
+    model,
     isStreaming,
     addMessage,
     appendToLastMessage,
@@ -118,14 +119,14 @@ export default function DashboardPage() {
         ...(systemContext
           ? [{ role: "system" as const, content: systemContext }]
           : []),
-        ...messages,
+        ...messages.filter((m) => m.content.trim() !== ""),
         { role: "user" as const, content },
       ];
 
       try {
         await api.chatStream(
           provider,
-          { messages: chatMessages, stream: true },
+          { messages: chatMessages, model, stream: true },
           (chunk) => appendToLastMessage(chunk),
           () => {
             setStreaming(false);

@@ -68,8 +68,21 @@ func main() {
 	proxyHandler.SetUserKeyStore(&userKeyAdapter{store: store})
 
 	// Load user API keys from database (for local-user in dev mode)
+	// User-saved keys take priority, env keys are fallback
 	if savedSettings, err := store.GetUserSettings(context.Background(), "local-user"); err == nil && savedSettings != nil {
-		proxyHandler.ReloadAdapters(savedSettings.OpenAIKey, savedSettings.AnthropicKey, savedSettings.GroqKey, cfg.OllamaHost)
+		mergedOpenAI := cfg.OpenAIAPIKey
+		if savedSettings.OpenAIKey != "" {
+			mergedOpenAI = savedSettings.OpenAIKey
+		}
+		mergedAnthropic := cfg.AnthropicAPIKey
+		if savedSettings.AnthropicKey != "" {
+			mergedAnthropic = savedSettings.AnthropicKey
+		}
+		mergedGroq := cfg.GroqAPIKey
+		if savedSettings.GroqKey != "" {
+			mergedGroq = savedSettings.GroqKey
+		}
+		proxyHandler.ReloadAdapters(mergedOpenAI, mergedAnthropic, mergedGroq, cfg.OllamaHost)
 	}
 
 	// Initialize router

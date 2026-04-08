@@ -23,6 +23,7 @@ export default function ChatPage() {
   const {
     messages,
     provider,
+    model,
     isStreaming,
     conversationId,
     splitView,
@@ -38,10 +39,11 @@ export default function ChatPage() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Check if user has their own Groq key — if not, show banner
+  // Show banner if user has no personal Groq key (even if default key works)
   useEffect(() => {
+    if (bannerDismissed) return;
     api.getSettings().then((data) => {
-      if (!data.groq_configured && !bannerDismissed) {
+      if (!data.groq_configured) {
         setShowApiBanner(true);
       }
     }).catch(() => {});
@@ -78,7 +80,11 @@ export default function ChatPage() {
         await api.chatStream(
           provider,
           {
-            messages: [...messages, { role: "user" as const, content }],
+            messages: [
+              ...messages.filter((m) => m.content.trim() !== ""),
+              { role: "user" as const, content },
+            ],
+            model,
             stream: true,
           },
           (chunk) => {
