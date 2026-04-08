@@ -27,7 +27,7 @@ Switch between GPT, Claude, and Llama without losing context. Your memory stays 
 
 <br>
 
-[Overview](#-overview) · [Screenshots](#-screenshots) · [Demo](#-demo-videos) · [How it Works](#-workflow) · [Quick Start](#-quick-start) · [API](#api) · [Security](#-security) · [Contributing](#contributing)
+[Overview](#overview) · [MVP Demo](#mvp-demo-local) · [How it Works](#workflow) · [Quick Start](#-quick-start) · [Features](#features) · [Security](#-security) · [Contributing](#contributing)
 
 </div>
 
@@ -54,43 +54,44 @@ From serious AI workflows to visual exploration of your own memory, mh-gdpr-ai.e
 
 ---
 
+## MVP Demo (Local)
+
+> **This is the working MVP running locally.** The design is not final — the goal here is to prove the core technology works. Every feature below is functional right now.
+
+### Why this matters
+
+Every time you switch AI provider today, you start from zero. Your context, your preferences, your history — gone. You're locked in, or you lose everything.
+
+**mh-gdpr-ai.eu S+ solves this.** Here's what the MVP already does:
+
+- **Unified memory across all AIs** — Talk to Groq, switch to GPT, switch to Claude. They all share the same memory. Zero context lost.
+- **Automatic memory extraction** — Every conversation is analyzed and turned into persistent memories. You don't have to do anything.
+- **3D memory visualization** — Your AI brain displayed as stars in space. Each star is a memory. Click it, explore it, delete it.
+- **Split view: Stars + Memory List + Chat** — See your memories live while you chat. Copy any memory text and ask the AI to modify or delete it.
+- **Encrypted local storage** — AES-256 encryption. Your data stays on your machine. No cloud. No tracking. No lock-in.
+- **Free by default** — Groq (Llama) works out of the box, no payment required. Add your own OpenAI or Anthropic keys if you want.
+
+### MVP Screenshots
+
+| Chat + Split View (Stars + Memories + Chat) | 3D Memory Space |
+|:---:|:---:|
+| ![Split View](docs/assets/screenshot-mvp-splitview.png) | ![3D Space](docs/assets/screenshot-mvp-space.png) |
+| **Settings (API Keys)** | **Dashboard** |
+| ![Settings](docs/assets/screenshot-mvp-settings.png) | ![Dashboard](docs/assets/screenshot-mvp-dashboard.png) |
+
+### MVP Demo Video
+
+[![MVP Demo Video](docs/assets/demo-mvp-cover.png)](https://youtube.com)
+
+*Full walkthrough of the local MVP: chat with Groq, switch providers, create memories, explore the 3D space, manage memories via natural language.*
+
+> Screenshots and video are from the local development environment. The production version with final design is coming soon at **[mh-gdpr-ai.eu](https://mh-gdpr-ai.eu)**.
+
+---
+
 ## Live Demo
 
-> Welcome to our online demo platform! (Coming soon)
->
 > **[mh-gdpr-ai.eu](https://mh-gdpr-ai.eu)** — Live demo will be available here after deployment.
-
----
-
-## Screenshots
-
-| Landing Page | Chat Interface | Provider Switch |
-|:---:|:---:|:---:|
-| ![Landing](docs/assets/screenshot-landing.png) | ![Chat](docs/assets/screenshot-chat.png) | ![Switch](docs/assets/screenshot-chat-switch.png) |
-| **3D Memory Dashboard** | **Memory Detail** | **Login** |
-| ![3D](docs/assets/screenshot-space-3d.png) | ![Detail](docs/assets/screenshot-space-detail.png) | ![Login](docs/assets/screenshot-login.png) |
-
----
-
-## Demo Videos
-
-### 1. Full Protocol Demo — Switch GPT → Claude → Llama without losing context
-
-[![Demo Video](docs/assets/demo-video-cover.png)](https://youtube.com)
-
-*Demo video of mh-gdpr-ai.eu S+*
-
-*Click the image to watch the full demonstration of switching between AI providers with zero context loss.*
-
-### 2. 3D Memory Dashboard — Explore your AI brain in space
-
-[![3D Demo](docs/assets/demo-3d-cover.png)](https://youtube.com)
-
-*3D Dashboard demo of mh-gdpr-ai.eu S+*
-
-*Click the image to watch the full visual exploration of the 3D memory dashboard with stars, connections, and context flows.*
-
-> More demos coming soon: multi-AI collaboration, GDPR plugin, smart routing...
 
 ---
 
@@ -125,12 +126,17 @@ docker-compose up --build
 
 | Feature | Status |
 |---------|--------|
-| Proxy (OpenAI, Anthropic, Ollama) | ✅ |
+| Proxy (Groq, OpenAI, Anthropic, Ollama) | ✅ |
+| Groq (Llama) free by default | ✅ |
 | Local memory (SQLite, encrypted) | ✅ |
 | Context injection on provider switch | ✅ |
 | Streaming responses (SSE) | ✅ |
 | 3D spatial dashboard | ✅ |
+| Split view: 3D Stars + Memory List + Chat | ✅ |
 | Chat interface with provider switch | ✅ |
+| Settings page (encrypted API keys) | ✅ |
+| MH Assistant (system prompt with memory actions) | ✅ |
+| Chat persistence (survives page reload) | ✅ |
 | JWT auth + security headers | ✅ |
 | AES-256 encryption at rest | ✅ |
 | Rate limiting | ✅ |
@@ -142,7 +148,7 @@ docker-compose up --build
 
 ## API
 
-All routes under `/api/v1/` — chat proxy, memories, conversations, providers. Set provider via header: `X-MH-Provider: openai | anthropic | ollama`
+All routes under `/api/v1/` — chat proxy, memories, conversations, providers, settings. Set provider via header: `X-MH-Provider: groq | openai | anthropic | ollama`
 
 ## Security
 
